@@ -1,0 +1,81 @@
+Sujet: diabète
+problème: quels sont les facteurs de risque?
+
+Texte:
+
+Chaque année, des milliers de français découvrent qu'ils sont diabétiques. Pourtant, cette maladie pourrait être évitée si la population connaissait mieux les facteurs à risques. C'est là qu'intervient la FFD.
+///Montrer le logo de la FFD///
+La Fédération Française des Diabétiques souhaite faire une campagne de sensibilisation afin de limiter le nombre de nouveaux diabétiques.
+
+Mais pour que leur campagne soit efficace, il faut qu'elle soit claire et impactante pour la population.
+
+C'est pourquoi ils veulent axer leur campagne sur les facteurs de risque les plus importants.
+
+///faire apparaître un tiret campagne, puis risques, puis 70 000 patients///
+
+Alors, la FFD a déjà une idée assez nette des facteurs de risques liés au diabète, mais ici, elle nous a contactés pour qu'on lui indique lesquels ont le
+plus d'impact sur l'apparition du diabète.
+
+Pour répondre à cette problématique, on a donc analysé un dataset contenant un certains nombre de données de plus de 70 000 patients.
+
+Y compris le fait qu'ils soient diabétiques ou non.
+
+///On passe à une slide bien différente///
+
+Concrètement, ce qu'on a fait:
+
+On a importé toutes les librairies habituelle ainsi que le dataset concerné, sur python.
+
+J'ai vite remarqué qu'il y avait beaucoup de colonnes différentes (22).
+
+Alors déjà j'ai voulu faire un premier tri en observant la colinéarité des différentes variables afin de potentiellement retirer celles qui seraient redondantes.
+///condenser la partie colinéarité, aller droit au but.///
+Finalement, les variables au coefficient de colinéarité le plus élevé n'atteignaient que 0.6, j'ai donc décidé, pour le moment, garder toutes mes variables..
+
+Ensuite, j'ai visualisé ces données grâce à la librairie seaborn. On semble assez nettement voir une corrélation entre un haut niveau de cholesterol et le diabète. Ou une pression artérielle élevée et le diabète. Par contre, le lien avec la consommation de cigarette semble plus modéré.
+
+Ensuite, je suis passé à la partie pre-processing.
+
+Après avoir séparé X de y, j'ai exclu certaines variables qui auraient pu biaiser mon algorithme.
+
+À savoir: les AVC, les maladies cardiaques et infarctus, la santé globale perçue, la santé mentale, la santé physique et la difficulté à marcher.
+
+Pourquoi ces variables ? Parce qu'on connaît les différentes conséquences du diabète et que ces variables là peuvent être affectées par l'apparition de diabète. Sauf qu'ici on veut connaitre les variables qui affectent le diabète, pas l'inverse.
+
+Mais ici, on ce que l'on veut garder c'est uniquement ce qui cause le diabète, ou en tout cas augmente les risques d'apparition.
+
+Après ça, j'ai vérifié que mon dataset ne contenait pas de case vide, ce n'était effectivement pas le cas et j'ai standardisé les données.
+
+Avant de spliter mes données, j'ai préférer fusionner certaines colonnes relevant de domaine important et très proche de la vie quotidienne des gens.
+
+J'ai donc créé la colonne nutri_score contenant fruit et veggie.
+Scoresocioeco contenant education et salaire.
+Accesglobalcare contenant la colonne concernant les personnes qui n'ont pas de médecin, à cause du prix, et la colonne indiquant si les patients ont reçu un soin quel qu'il soit.
+Et finalement le scoremetabolique contenant la pression artérielle, le taux de cholesterol et l'indice de masse corporelle.
+
+Logiquement, j'ai supprimé toutes les colonnes ayant été fusionnées. Puis j'ai split.
+
+Alors, la partie entrainement.
+
+J'ai utilisé une régression logistique, un arbre de décision avec en argument max_depth=5 et une forêt aléatoire (n_estimator=100, max_depth=6). Pour déterminer ces paramètres, j'ai testé plusieurs valeurs et c'est avec celles que je viens de citer que mes modèles étaient les plus performants, tout en overfittant le moins possible.
+
+Comme on peut le voir ici, les trois options offrent des résultats relativement similaires, mais je vais partir sur la forêt aléatoire car c'est celle qui overfitte le moins.
+
+Ce score d'ailleurs, n'est pas exceptionnel. On a bon dans 73% des cas. Mais ça reste correcte et comme ce qui nous intéresse, plus que la prédiction, c'est de savoir quelle variable ont de l'importance dans cette prédiction, et non de réellement faire un diagnostique, ce score est suffisant.
+
+Pour finir, j'ai créé un dataframe contenant le coefficient de chaque colonne que j'ai retranscrit sous la forme d'un graph.
+Voilà ce que ça donne. On voit clairement que certaines variables n'ont que très peu d'impact, je les élimine donc et obtient ce graphe.
+
+Alors là, on voit clairement que le score metabolique est la variable ayant le plus d'impact sur notre prédiction. Donc que ce qu'elle contient, le haut niveau de cholesterol, la pression artérielle et l'indice de masse corporel sont fortement corrélés au diabète.
+
+Mais il est important de se demander si ces variables sont des causes directes du diabète ou si elles captent des effets plus profonds qui n'ont pas été mesurés dans notre dataset. En l'occurrence, on voit assez nettement le lien unissant le cholesterol, la pression artérielle et l'imc avec l'alimentation.
+
+Je vais donc conseiller à la FFD d'axer sa campagne sur les liens entre une mauvaise alimentation et l'apparition de diabète.
+
+En ciblant en priorité les 18-40 ans qui représente la tranche d'âge dont les habitudes de vie sont les plus bouleversées (entrée vie active, départ du foyer familial, parentalité) en mettant en avant ces changements de mode de vie qui augmentent les risques de diabète, comme l'alimentation rapide.
+
+En second lieu, on vise les + de 50 ans, plus réceptifs aux problèmes que peut causer le diabète car plus conscient de leur vieillissement. Pour eux, on va surtout insister sur non pas le diabète en lui-même mais les conséquences qu'il peut avoir.
+
+Proposition de campagne impactante: un court métrage montrant plusieurs conséquences graves du diabète suivi d'une phrase choque "Une mauvaise alimentation aussi peut causer des ravages".
+
+Message clé de la campagne: Changer vos habitudes aujourd'hui, c'est éviter les complications graves de demain.
